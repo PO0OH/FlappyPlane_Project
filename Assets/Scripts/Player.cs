@@ -33,7 +33,14 @@ public class Player : MonoBehaviour
     {
         if(isDead)
         {
-
+            if(deathCooldown <= 0)
+            {
+                // 게임 재시작
+            }
+            else
+            {
+                deathCooldown -= Time.deltaTime; //이전 프레임과 현재 프레임 사이의 시간을 의미
+            }
         }
         else
         {
@@ -60,6 +67,18 @@ public class Player : MonoBehaviour
         _rigidbody.velocity = velocity;
 
         float angle = Mathf.Clamp((_rigidbody.velocity.y * 10f), -90, 90);
-        transform.rotation = Quaternion.Euler(0, 0, 0);
+        transform.rotation = Quaternion.Euler(0, 0, angle);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (godmode) return;
+
+        if (isDead) return;
+
+        isDead = true;
+        deathCooldown = 1f;
+
+        animator.SetInteger("IsDie", 1);
     }
 }
